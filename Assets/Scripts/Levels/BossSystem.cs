@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,10 +7,15 @@ using UnityEngine;
 [RequireComponent(typeof(LevelSystem))]
 public class BossSystem : MonoBehaviour
 {
+    [Required]
     public GameObject bossObject = null;
+    [Required]
     public GameObject wall = null;
+    [Required]
     public EntryDetection entryDetection = null;
+    [Required]
     public GameObject bossSpawnLocation = null;
+    [Required]
     public GameObject playerRespawnTeleporter = null;
 
     [HideInInspector]
@@ -49,6 +55,7 @@ public class BossSystem : MonoBehaviour
         // Spawn boss
         bossSpawned = true;
         GameObject boss = Instantiate(bossObject, bossSpawnLocation.transform);
+        boss.GetComponent<AimSystem_Prediction>().fixedTarget = playerSystem.gameObject;
         wall.SetActive(true);
         playerRespawnTeleporter.SetActive(true);
         bossHealthBar.GetComponent<HealthBarUI>().health = boss.GetComponent<HealthSystem>();

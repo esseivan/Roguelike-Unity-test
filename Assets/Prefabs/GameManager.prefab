@@ -46,4 +46,6 @@ MonoBehaviour:
   levelGenerationSystem: {fileID: 0}
   playerSystem: {fileID: 0}
   fadeScreen: {fileID: 0}
+  useEnum: 1
   difficulty: 3
+  difficultyScaler: 0.01

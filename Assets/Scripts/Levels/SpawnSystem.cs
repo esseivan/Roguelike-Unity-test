@@ -42,5 +42,6 @@ public class SpawnSystem : MonoBehaviour
             default:
                 break;
         }
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 2 * radius);
     }
 }

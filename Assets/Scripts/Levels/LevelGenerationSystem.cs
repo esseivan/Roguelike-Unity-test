@@ -194,6 +194,9 @@ public class LevelGenerationSystem : MonoBehaviour
     /// </summary>
     public Vector3 GenerateLevels(Vector3 pos)
     {
+        if (levelsToGenerate == 0)
+            return pos;
+
         // Get number of lines and columns to create a grid of levels (XZ grid)
         int lines = Mathf.FloorToInt(Mathf.Sqrt(levelsToGenerate));
         int columns = Mathf.CeilToInt(levelsToGenerate / lines);

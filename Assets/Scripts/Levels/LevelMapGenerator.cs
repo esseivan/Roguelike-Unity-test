@@ -38,7 +38,7 @@ public class LevelMapGenerator : MonoBehaviour
 
         // Generate grid
         grid.Clear();
-
+        gridItemObject.SetActive(true);
         /*** Sublevels ***/
         // Rescale object if required
         if (parameters.columns > (width - 2 * itemWidth) / itemWidth)
@@ -75,7 +75,7 @@ public class LevelMapGenerator : MonoBehaviour
             createdObject.transform.localPosition = new Vector2(itemWidth / 2, 0);
         }
 
-        Vector2 offset = new Vector2(itemWidth * 1.5f, itemHeight * parameters.lines / 2f);
+        Vector2 offset = new Vector2(itemWidth + itemWidth / 2, (itemHeight / 2f) * (parameters.lines - 1));
         Vector2 pos = Vector2.zero;
         Vector2 bossPos = new Vector2(width - itemWidth / 2, 0);
 
@@ -116,6 +116,7 @@ public class LevelMapGenerator : MonoBehaviour
             });
             createdObject.transform.localPosition = bossPos;
         }
+        gridItemObject.SetActive(false);
 
         // Add OnPlayerEnter events
         foreach (GridLevelObject item in grid)
@@ -158,8 +159,8 @@ public class LevelMapGenerator : MonoBehaviour
         public List<GameObject> sublevels = null;
         public GameObject bossArea = null;
 
-        public int columns = 1;
-        public int lines = 1;
+        public int columns = 0;
+        public int lines = 0;
     }
 
 }

@@ -133,6 +133,9 @@ public class PlayerSystem : MonoBehaviour
         {
             BulletSystem bs = collider.GetComponent<BulletSystem>();
             healthSystem.TakeDamage(bs.damage);
+
+            if (bs.type != BaseWeapon.AmmoType.Piercing)
+                bs.Destroy();
         }
     }
 

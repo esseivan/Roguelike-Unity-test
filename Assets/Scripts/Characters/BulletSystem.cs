@@ -17,6 +17,11 @@ public class BulletSystem : MonoBehaviour
 
     public GameObject shooter = null;
 
+    public void Destroy()
+    {
+        Destroy(gameObject);
+    }
+
     public void Update()
     {
         if (!isActive)

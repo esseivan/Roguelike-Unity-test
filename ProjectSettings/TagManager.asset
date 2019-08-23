@@ -17,8 +17,8 @@ TagManager:
   - 
   - Minimap
   - NonMinimap
-  - EnnemyTargettable
-  - Sublevels
+  - Player
+  - 
   - 
   - 
   - 
