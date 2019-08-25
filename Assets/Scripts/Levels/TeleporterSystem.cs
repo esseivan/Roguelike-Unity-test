@@ -30,9 +30,11 @@ public class TeleporterSystem : MonoBehaviour
 
     public event EventHandler OnLevelComplete = null;
 
+    private Collider currentCollider = null;
+
     public void SetLevelComplete(bool isLevelComplete, int levelIndex)
     {
-        if (particles != null)
+        if (particles != null && destination != null)
         {
             var main = particles.main;
             if (!isLevelComplete)
@@ -61,6 +63,12 @@ public class TeleporterSystem : MonoBehaviour
             GetComponent<ParticleSystem>().Play();
 
         IsTeleporterEnabled = true;
+
+        // Check if collider is already on the teleporter
+        if(currentCollider != null)
+        {
+            OnPlayerEnter(currentCollider);
+        }
     }
 
     /// <summary>
@@ -81,22 +89,33 @@ public class TeleporterSystem : MonoBehaviour
     // Called on collision
     private void OnTriggerEnter(Collider collider)
     {
-        if (!IsTeleporterEnabled)
-            return;
-
         if (collider.tag == "Player")
         {
-            if (isBossTeleporter && destination == null)
-            {
-                // New level
-                OnLevelComplete?.Invoke(this, EventArgs.Empty);
-            }
-            else
-            {
-                // Teleport player
-                collider.GetComponent<PlayerSystem>().SetLevel(destination);
-            }
+            currentCollider = collider;
+            if (!IsTeleporterEnabled)
+                return;
+
+            OnPlayerEnter(collider);
         }
+    }
+
+    private void OnPlayerEnter(Collider collider)
+    {
+        if (isBossTeleporter)
+        {
+            OnLevelComplete?.Invoke(this, EventArgs.Empty);
+        }
+        if (destination != null)
+        {
+            // Teleport player
+            collider.GetComponent<PlayerSystem>().SetLevel(destination);
+        }
+    }
+
+    private void OnTriggerExit(Collider collider)
+    {
+        if (collider == currentCollider)
+            currentCollider = null;
     }
 
     // Draw a gizmos line to the destination (yellow if the player is in this level)

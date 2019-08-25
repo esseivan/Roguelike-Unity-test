@@ -49,6 +49,9 @@ public class BaseWeapon
 
     public static void ScaleFrom(BaseWeapon scaled, BaseWeapon source, float factor)
     {
+        if (factor == 0)
+            throw new System.ArgumentOutOfRangeException(nameof(factor) + " is : " + factor);
+
         float beginnerScaler = 0.25f, easyScaler = 0.5f, mediumScaler = 1, hardScaler = 2;
         float bulletSpeedScaler;
         float damagePerShotScaler;

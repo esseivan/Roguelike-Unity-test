@@ -45,13 +45,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelsObject: {fileID: 0}
   generateStartArea: 1
-  startArea: {fileID: 6170927007254495160, guid: e9f6d77de8adfd148addfe1a2c66eece,
+  startArea: {fileID: 7552130853282154175, guid: 49fba19c2c3404a4682e57555781e1bd,
     type: 3}
-  levelsToGenerate: 1
+  levelsToGenerate: 10
   levels:
-  - {fileID: 7552130853282154175, guid: 8f488ccf133905e41a9d71efb79d9b0c, type: 3}
   - {fileID: 7552130853282154175, guid: f559658d0e446844a9fc67badba429ca, type: 3}
-  - {fileID: 7552130853282154175, guid: 6e34944d20f604148bd3dd6d8afdc063, type: 3}
+  - {fileID: 7552130853282154175, guid: e8765815cd611404e97a9a5e9fc08f11, type: 3}
   generateBossArea: 1
   bossArea: {fileID: 5998623885790295291, guid: 2a598d80bfe2cee4abef4bac9e5232c4,
     type: 3}

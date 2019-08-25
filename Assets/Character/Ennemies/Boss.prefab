@@ -87,11 +87,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6555525416530913596}
+  - component: {fileID: 8285637875032636059}
   - component: {fileID: 7635091409775669381}
   - component: {fileID: 1790509663466013087}
   - component: {fileID: 8766575614175267550}
   - component: {fileID: 3036644110912854755}
-  - component: {fileID: 605798981748608378}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -115,6 +115,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8285637875032636059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976271095404824077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc39cc6f07b7f2c4a8100b40b2a06d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fixedTarget: {fileID: 0}
+  shootFrom: {fileID: 0}
+  rotateFrom: {fileID: 0}
+  shootSpeed: 0
 --- !u!114 &7635091409775669381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,6 +147,8 @@ MonoBehaviour:
     type: 3}
   shootFrom: {fileID: 2927047213082193021}
   isEnnemy: 1
+  rotateFrom: {fileID: 6555525416530913596}
+  target: {fileID: 0}
 --- !u!114 &1790509663466013087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8566d951063544fa700198276ad02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 1500
+  maxHealth: 100
   health: 0
 --- !u!114 &8766575614175267550
 MonoBehaviour:
@@ -159,7 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fixedTarget: {fileID: 0}
   shootFrom: {fileID: 2927047213082193021}
-  shootRotation: 0
+  rotateFrom: {fileID: 0}
   shootSpeed: 0
 --- !u!114 &3036644110912854755
 MonoBehaviour:
@@ -178,27 +196,6 @@ MonoBehaviour:
   targettingRange: 100
   rangeDetection: {fileID: 3862522848887571301}
   bodyCollider: {fileID: 769840983152196863}
-  faceTarget: 0
---- !u!114 &605798981748608378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1976271095404824077}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2204d744e8b0264fb60c95b1e214f7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  source: 1
-  origin: {fileID: 2927047213082193021}
-  raycastType: 1
-  raycastSize: 20
-  filterTag: 
-  excludedLayers:
-    serializedVersion: 2
-    m_Bits: 823
 --- !u!1 &3862522848887571301
 GameObject:
   m_ObjectHideFlags: 0

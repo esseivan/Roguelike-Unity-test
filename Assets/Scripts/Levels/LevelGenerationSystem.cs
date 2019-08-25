@@ -91,12 +91,18 @@ public class LevelGenerationSystem : MonoBehaviour
 
     private int levelIndexCounter = 0;
 
+    public static int levelCount = -1;
+
     /// <summary>
     /// Start the generation of levels
     /// </summary>
     public GameObject StartGeneration()
     {
+        if (levelCount != -1)
+            levelsToGenerate = levelCount;
+
         generationParameters = new LevelMapGenerator.GenerationParameters();
+        generationParameters.levelsToGenerate = levelsToGenerate;
 
         // Start area
         lastPos = GenerateStartArea(lastPos);
@@ -198,8 +204,8 @@ public class LevelGenerationSystem : MonoBehaviour
             return pos;
 
         // Get number of lines and columns to create a grid of levels (XZ grid)
-        int lines = Mathf.FloorToInt(Mathf.Sqrt(levelsToGenerate));
-        int columns = Mathf.CeilToInt(levelsToGenerate / lines);
+        int lines = Mathf.CeilToInt(Mathf.Sqrt(levelsToGenerate));
+        int columns = Mathf.CeilToInt((float)levelsToGenerate / lines);
         // Line and column counter
         int iLines = 0, iColumns = 0;
         // Keep track of the greatest z size of the levels on the same line
@@ -247,6 +253,7 @@ public class LevelGenerationSystem : MonoBehaviour
                 pos.x += levelSystem.levelSize.transform.localScale.x;
             }
         }
+        pos.x = 0;
         pos.z += maxZ;
 
         generationParameters.lines = lines;
@@ -279,7 +286,7 @@ public class LevelGenerationSystem : MonoBehaviour
         LevelSystem levelSystem = generatedBossArea.GetComponent<LevelSystem>();
         levelSystem.levelIndex = levelIndexCounter++;
 
-        BossSystem bs = generatedBossArea.GetComponent<BossSystem>();
+        BossLevelSystem bs = generatedBossArea.GetComponent<BossLevelSystem>();
         bs.bossHealthBar = bossHealthBar;
         bs.playerSystem = playerSystem;
 

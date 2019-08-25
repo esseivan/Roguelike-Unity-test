@@ -363,8 +363,7 @@ GameObject:
   - component: {fileID: 1845765030755670017}
   - component: {fileID: 905168137153963255}
   - component: {fileID: 1095346164866037247}
-  - component: {fileID: 2419071486113842147}
-  - component: {fileID: 5153984502719059341}
+  - component: {fileID: 5636354069198707688}
   m_Layer: 0
   m_Name: Ennemy
   m_TagString: Untagged
@@ -405,6 +404,7 @@ MonoBehaviour:
     type: 3}
   shootFrom: {fileID: 4589138788476377997}
   isEnnemy: 1
+  rotateFrom: {fileID: 7912623549843775371}
 --- !u!114 &1845765030755670017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,7 +450,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthbarEnnemy: {fileID: 8750866523619325645, guid: 9795f07f79a153d43b7cd339dfe4a9f1,
     type: 3}
---- !u!114 &2419071486113842147
+--- !u!114 &5636354069198707688
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -459,27 +459,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7912623549843775375}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2204d744e8b0264fb60c95b1e214f7a, type: 3}
+  m_Script: {fileID: 11500000, guid: cc39cc6f07b7f2c4a8100b40b2a06d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  source: 1
-  origin: {fileID: 4589138788476377997}
-  raycastType: 1
-  raycastSize: 5
-  filterTag: 
-  excludedLayers:
-    serializedVersion: 2
-    m_Bits: 292
---- !u!114 &5153984502719059341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7912623549843775375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4867e05cd84402a4a96202fc47ee0c14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  fixedTarget: {fileID: 0}
+  shootFrom: {fileID: 0}
+  rotateFrom: {fileID: 0}
+  shootSpeed: 0

@@ -31,4 +31,10 @@ public class BulletSystem : MonoBehaviour
         if (timeCounter >= lifeTime)
             Destroy(this.gameObject);
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 10);
+    }
 }

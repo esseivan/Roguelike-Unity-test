@@ -3,73 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// Predict where will be the target moving in a straight line. Easily countered by moving in circles.
+/// Easily improved by increasing shoot speed
+/// </summary>
 public class AimSystem_Prediction : BaseAimSystem
 {
-    private RaycastSystem raycastSystem = null;
-
-    protected string targetTag = "Player";
-
-    private bool isFound = false;
-
-    private bool isTargetFixed = false;
-
+    /// <summary>
+    /// The target must have a predictable component
+    /// </summary>
     private Predictable predictable = null;
 
-    private void Start()
+    public override float GetAim()
     {
-        if (fixedTarget == null)
+        if (fixedTarget != null)
         {
-            isTargetFixed = false;
-            raycastSystem = GetComponent<RaycastSystem>();
-            raycastSystem.filterTag = targetTag;
-            raycastSystem.OnNewTargetTag += RaycastSystem_OnNewTargetTag;
-            raycastSystem.OnTargetLost += RaycastSystem_OnTargetLost;
-        }
-        else
-        {
-            isTargetFixed = true;
-            predictable = fixedTarget.GetComponent<Predictable>();
-        }
-    }
+            // Get predictable object
+            if (predictable == null)
+                predictable = fixedTarget.GetComponent<Predictable>();
 
-    private void Update()
-    {
-        // Get prediction
-        if (isTargetFixed)
-        {
-            if (!isFound)
-            {
-                isFound = true;
-                TriggerOnTargetAcquired(this);
-            }
+            // Get prediction
             shootRotation = predictable.GetPrediction(shootSpeed, shootFrom);
-            shootFrom.LookAt(fixedTarget.transform);
-            Debug.Log(shootRotation);
-            shootFrom.Rotate(shootFrom.up, shootRotation);
+            //shootFrom.LookAt(fixedTarget.transform);
+            //if(shootRotation != 0)
+            //Debug.Log(shootRotation);
+            //shootFrom.Rotate(shootFrom.up, shootRotation);
         }
         else
-        {
-            if (isFound)
-            {
-                if (raycastSystem.lastHit.collider.gameObject.TryGetComponent(out Predictable predictable))
-                {
-                    shootRotation = predictable.GetPrediction(shootSpeed, shootFrom);
-                }
-            }
-        }
-    }
+            predictable = null;
 
-    private void RaycastSystem_OnTargetLost(object sender, EventArgs e)
-    {
-        isFound = false;
-        TriggerOnTargetLost(this);
-    }
-
-    private void RaycastSystem_OnNewTargetTag(object sender, EventArgs e)
-    {
-        isFound = true;
-        target = raycastSystem.lastHit;
-        TriggerOnTargetAcquired(this);
+        return shootRotation;
     }
 }

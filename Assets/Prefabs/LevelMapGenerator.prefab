@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridmapObject: {fileID: 0}
-  gridItemObject: {fileID: 3209268073078507590, guid: 78600a3b333221d4ea23b03999ac8499,
-    type: 3}
+  gridItemObject: {fileID: 0}
   width: 400
   height: 400

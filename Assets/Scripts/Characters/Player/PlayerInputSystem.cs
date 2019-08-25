@@ -70,39 +70,6 @@ public class PlayerInputSystem : MonoBehaviour
     [ShowIf("canOpenMap"), Required]
     public RectTransform sublevelGridmapBorder = null;
 
-    private FullscreenSettings savedGridmap, savedBorder;
-    private FullscreenSettings fullscreenGridmap = new FullscreenSettings()
-    {
-        anchorMin = new Vector2(0, 0),
-        anchorMax = new Vector2(1, 1),
-        offsetMax = new Vector2(0, 0),
-        offsetMin = new Vector2(0, 0),
-    };
-
-    private class FullscreenSettings
-    {
-        public Vector2 anchorMin, anchorMax;
-        public Vector2 offsetMin, offsetMax;
-
-        public FullscreenSettings() { }
-
-        public FullscreenSettings(RectTransform rectTransform)
-        {
-            anchorMin = rectTransform.anchorMin;
-            anchorMax = rectTransform.anchorMax;
-            offsetMin = rectTransform.offsetMin;
-            offsetMax = rectTransform.offsetMax;
-        }
-
-        public void SetSettings(RectTransform rectTransform)
-        {
-            rectTransform.anchorMin = anchorMin;
-            rectTransform.anchorMax = anchorMax;
-            rectTransform.offsetMin = offsetMin;
-            rectTransform.offsetMax = offsetMax;
-        }
-    }
-
     /// <summary>
     /// The Character controller
     /// </summary>
@@ -122,14 +89,14 @@ public class PlayerInputSystem : MonoBehaviour
 
     private BaseWeapon weapon = null;
 
+    private bool isMapOpen = false;
+
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
         player = GetComponent<Transform>();
         weaponSystem = GetComponent<WeaponSystem>();
-        weapon = new Weapon_AssaultRifle().CreateTarget();
-        weaponSystem.EquipWeapon(weapon);
         raycastSystem = GetComponent<RaycastSystem>();
     }
 
@@ -176,19 +143,22 @@ public class PlayerInputSystem : MonoBehaviour
         controller.SimpleMove(move);
 
         /*** Map ***/
-        if (Input.GetButtonDown("OpenMap"))
+        if (canOpenMap)
         {
-            savedGridmap = new FullscreenSettings(sublevelGridmap);
-
-            sublevelGridmap.anchorMin = new Vector2(0, 0);
-            sublevelGridmap.anchorMax = new Vector2(1, 1);
-            sublevelGridmap.offsetMin = new Vector2(0, 0);
-            sublevelGridmap.offsetMax = new Vector2(0, 0);
-        }
-        if (Input.GetButtonUp("OpenMap"))
-        {
-            sublevelGridmap.anchorMin = new Vector2(1, 0);
-            sublevelGridmap.anchorMax = new Vector2(1, 0);
+            if (Input.GetButtonDown("OpenMap"))
+            {
+                isMapOpen = !isMapOpen;
+                if (isMapOpen)
+                {
+                    sublevelGridmap.GetComponent<Fullscrenable>().SetFullscreen();
+                    sublevelGridmapBorder.GetComponent<Fullscrenable>().SetFullscreen();
+                }
+                else
+                {
+                    sublevelGridmap.GetComponent<Fullscrenable>().UnsetFullscreen();
+                    sublevelGridmapBorder.GetComponent<Fullscrenable>().UnsetFullscreen();
+                }
+            }
         }
 
         /*** Zoom ***/
@@ -213,8 +183,7 @@ public class PlayerInputSystem : MonoBehaviour
         // Left click
         if (Input.GetMouseButton(0))
         {
-            if (weaponSystem.CanShoot())
-                weaponSystem.Shoot(raycastSystem.lastHit.point);
+            weaponSystem.Shoot(raycastSystem.lastHit.point);
         }
     }
 }

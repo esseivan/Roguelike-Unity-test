@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LevelSystem))]
-public class StartAreaSystem : MonoBehaviour
+public class StartLevelSystem : MonoBehaviour
 {
     private LevelSystem levelSystem = null;
 

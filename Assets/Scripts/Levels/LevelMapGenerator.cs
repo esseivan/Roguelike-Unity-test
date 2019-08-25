@@ -83,8 +83,17 @@ public class LevelMapGenerator : MonoBehaviour
         {
             for (int j = 0; j < parameters.columns; j++)
             {
-                GameObject createdObject = Instantiate(gridItemObject, gridmapObject.transform);
                 int k = parameters.columns * i + j;
+                // If max reached, exit
+                if(k >= parameters.levelsToGenerate)
+                {
+                    i = parameters.lines;
+                    j = parameters.columns;
+                    continue;
+                }
+
+                GameObject createdObject = Instantiate(gridItemObject, gridmapObject.transform);
+
                 grid.Add(new GridLevelObject()
                 {
                     sublevel = parameters.sublevels[k],
@@ -161,6 +170,7 @@ public class LevelMapGenerator : MonoBehaviour
 
         public int columns = 0;
         public int lines = 0;
+        public int levelsToGenerate = 0;
     }
 
 }

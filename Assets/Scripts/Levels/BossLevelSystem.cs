@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LevelSystem))]
-public class BossSystem : MonoBehaviour
+public class BossLevelSystem : MonoBehaviour
 {
     [Required]
     public GameObject bossObject = null;
@@ -60,8 +60,9 @@ public class BossSystem : MonoBehaviour
         playerRespawnTeleporter.SetActive(true);
         bossHealthBar.GetComponent<HealthBarUI>().health = boss.GetComponent<HealthSystem>();
         bossHealthBar.SetActive(true);
-        EnnemySystem bossEnemySystem = boss.GetComponent<EnnemySystem>();
-        bossEnemySystem.OnDied += BossEnemySystem_OnDied;
+        EnnemySystem bossEnnemySystem = boss.GetComponent<EnnemySystem>();
+        bossEnnemySystem.weapon = new WeaponB_AssaultRifle();
+        bossEnnemySystem.OnDied += BossEnemySystem_OnDied;
     }
 
     private void BossEnemySystem_OnDied(object sender, EventArgs e)

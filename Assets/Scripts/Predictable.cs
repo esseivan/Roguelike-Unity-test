@@ -23,13 +23,15 @@ public class Predictable : MonoBehaviour
         targetPosition = transform.position;
 
         // Get speed ratio (and distance traveled ratio)
-        float speedRatio = targetSpeed / speed;
+        // Don't why but divide target speed by 2... it works then
+        float speedRatio = speed / (targetSpeed * 0.5f);
 
         // Get angle between the target direction and the source
         float angle = -Vector3.SignedAngle(shootFrom.position - targetPosition, targetDirection, shootFrom.up);
 
         // Get at the source
-        float angleSrc = angle * speedRatio;
+        float sinAngleSrc = Mathf.Sin(angle * Mathf.Deg2Rad) / speedRatio;
+        float angleSrc = Mathf.Asin(sinAngleSrc) * Mathf.Rad2Deg;
 
         // return the rotated direction
         return angleSrc;

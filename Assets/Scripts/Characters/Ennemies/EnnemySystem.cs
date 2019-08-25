@@ -6,19 +6,37 @@ using UnityEngine;
 /// <summary>
 /// Manage an ennemy
 /// </summary>
-[RequireComponent(typeof(WeaponSystem), typeof(HealthSystem), typeof(BaseAimSystem))]
+[RequireComponent(typeof(WeaponSystem), typeof(HealthSystem))]
 public class EnnemySystem : MonoBehaviour
 {
+    /// <summary>
+    /// Damage on contact
+    /// </summary>
     public int contactDamage = 5;
+    /// <summary>
+    /// Damage every x seconds
+    /// </summary>
     public float contactDamageEveryXsec = 0.2f;
+    /// <summary>
+    /// The range ennemies start attacking you
+    /// </summary>
     public int targettingRange = 15;
 
+    /// <summary>
+    /// The range detection gameobject
+    /// </summary>
     [Required]
     public GameObject rangeDetection = null;
+    /// <summary>
+    /// The body collider object. Used to detect collision on ennemy
+    /// </summary>
     [Required]
     public EntryDetection bodyCollider = null;
 
-    public bool faceTarget = true;
+    ///// <summary>
+    ///// Wheter ennemies automatically face the target
+    ///// </summary>
+    //public bool faceTarget = true;
     /// <summary>
     /// Event for whenever the ennemy dies
     /// </summary>
@@ -36,10 +54,8 @@ public class EnnemySystem : MonoBehaviour
     private WeaponSystem weaponSystem = null;
     private HealthSystem healthSystem = null;
     private EntryDetection entryDetector = null;
-    private BaseAimSystem aimSystem = null;
 
-    private Transform target = null;
-    private bool isTargetAcquired = false;
+    private GameObject target = null;
 
     static float DifficultyScaler { get; set; }
     float difficulty;
@@ -66,24 +82,14 @@ public class EnnemySystem : MonoBehaviour
         entryDetector.OnExit += EntryDetection_OnExit;
         bodyCollider.OnEnter += BodyCollider_OnEnter;
         bodyCollider.OnExit += BodyCollider_OnExit;
-        aimSystem = GetComponent<BaseAimSystem>();
-        aimSystem.OnTargetAcquired += AimSystem_OnTargetAcquired;
-        aimSystem.OnTargetLost += AimSystem_OnTargetLost;
-        aimSystem.shootFrom = transform;
-        aimSystem.shootSpeed = scaledWeapon.ShootSpeed;
         rangeDetection.transform.localScale = new Vector3(targettingRange, 1, targettingRange);
     }
 
-    private void AimSystem_OnTargetLost(object sender, System.EventArgs e)
+    public void EquipWeapon(BaseWeapon.BaseWeaponModifier weapon)
     {
-        Debug.Log("Target lost");
-        isTargetAcquired = false;
-    }
-
-    private void AimSystem_OnTargetAcquired(object sender, System.EventArgs e)
-    {
-        Debug.Log("Target Acquired");
-        isTargetAcquired = true;
+        baseWeapon = weapon.CreateTarget();
+        scaledWeapon = weapon.CreateTarget().Scale(difficulty);
+        weaponSystem.EquipWeapon(scaledWeapon);
     }
 
     private void BodyCollider_OnExit(object sender, System.EventArgs e)
@@ -131,7 +137,7 @@ public class EnnemySystem : MonoBehaviour
         Collider tempTarget = (Collider)sender;
         if (tempTarget.tag == "Player")
         {
-            target = tempTarget.transform;
+            target = tempTarget.gameObject;
         }
     }
 
@@ -143,13 +149,14 @@ public class EnnemySystem : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (target != null && faceTarget)
-        {
-            // Face the target
-            var targetRotation = Quaternion.LookRotation(target.position - transform.position);
-            var str = Mathf.Min(0.5f * Time.deltaTime, 1);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, str);
-        }
+        //if (target != null && faceTarget)
+        //{
+        //    // Face the target
+        //    var targetRotation = Quaternion.LookRotation(target.transform.position - transform.position);
+        //    //var str = Mathf.Min(0.5f * Time.deltaTime, 1);
+        //    var str = 1;
+        //    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, str);
+        //}
     }
 
     private void Update()
@@ -159,14 +166,12 @@ public class EnnemySystem : MonoBehaviour
         {
             difficulty = DifficultyScaler;
             scaledWeapon.ScaleFrom(baseWeapon, difficulty);
-            aimSystem.shootSpeed = scaledWeapon.ShootSpeed;
         }
 
-        if (isTargetAcquired && target != null)
+        if (target != null)
         {
-            // Manager by aimsystem
-            //transform.Rotate(transform.up, aimSystem.shootRotation);
-            weaponSystem.Shoot(weaponSystem.shootFrom.transform.forward);
+            weaponSystem.target = target;
+            weaponSystem.Shoot();
         }
 
         // Damage on contact to ennemy

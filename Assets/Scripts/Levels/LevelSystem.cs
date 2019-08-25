@@ -194,7 +194,7 @@ public class LevelSystem : MonoBehaviour
             if (OnPlayerFall == null && playerSystem != null)
                 playerSystem.TeleportCharacter(teleporterEntry.transform.position);
             else
-                OnPlayerFall.Invoke(sender, e);
+                OnPlayerFall?.Invoke(sender, e);
         }
         else if (collider.tag == "Ennemy")
         {

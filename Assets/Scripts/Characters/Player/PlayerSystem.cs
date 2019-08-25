@@ -12,21 +12,24 @@ public class PlayerSystem : MonoBehaviour
     /// The level the player is in
     /// </summary>
     public LevelSystem CurrentLevel { get; private set; } = null;
+
+    public BaseWeapon.BaseWeaponModifier weapon = new Weapon_AssaultRifle();
     /// <summary>
     /// The movement system
     /// </summary>
-    [Required]
     private PlayerInputSystem movementSystem = null;
     /// <summary>
     /// The character controller
     /// </summary>
-    [Required]
     private CharacterController characterController = null;
     /// <summary>
     /// The health system
     /// </summary>
-    [Required]
     private HealthSystem healthSystem = null;
+    /// <summary>
+    /// The health system
+    /// </summary>
+    private WeaponSystem weaponSystem = null;
     /// <summary>
     /// The minimap camera
     /// </summary>
@@ -38,11 +41,15 @@ public class PlayerSystem : MonoBehaviour
     /// </summary>
     public event EventHandler OnDied = null;
 
+    public event EventHandler OnLevelChanged = null;
+
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
         movementSystem = GetComponent<PlayerInputSystem>();
         healthSystem = GetComponent<HealthSystem>();
+        weaponSystem = GetComponent<WeaponSystem>();
+        weaponSystem.EquipWeapon(weapon.CreateTarget());
     }
 
     /// <summary>
@@ -93,6 +100,8 @@ public class PlayerSystem : MonoBehaviour
         // Call the enter event
         CurrentLevel.playerSystem = this;
         CurrentLevel.PlayerEnter();
+
+        OnLevelChanged?.Invoke(CurrentLevel, EventArgs.Empty);
     }
 
     private void CurrentLevel_OnPlayerFall(object sender, EventArgs e)

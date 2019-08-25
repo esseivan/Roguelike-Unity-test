@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Manage the main process
@@ -85,12 +86,18 @@ public class GameManager : MonoBehaviour
         playerSystem.EnableMovements();
 
         if (levelGenerationSystem.generateBossArea)
-            levelGenerationSystem.generatedBossArea.GetComponent<BossSystem>().OnLevelComplete += GameManager_OnLevelComplete;
+            levelGenerationSystem.generatedBossArea.GetComponent<BossLevelSystem>().OnLevelComplete += GameManager_OnLevelComplete;
+    }
+
+    private void UnloadScene()
+    {
+        AsyncOperation operation = SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene(), UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
     }
 
     private void GameManager_OnLevelComplete(object sender, System.EventArgs e)
     {
-        StartGame();
+        // Unload scene
+        UnloadScene();
     }
 
     public void SetDifficulty(Difficulty difficulty)
