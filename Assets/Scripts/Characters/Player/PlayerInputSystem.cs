@@ -87,8 +87,6 @@ public class PlayerInputSystem : MonoBehaviour
     /// </summary>
     private RaycastSystem raycastSystem = null;
 
-    private BaseWeapon weapon = null;
-
     private bool isMapOpen = false;
 
     // Start is called before the first frame update

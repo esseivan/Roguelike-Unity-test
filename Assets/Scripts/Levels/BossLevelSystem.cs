@@ -12,7 +12,7 @@ public class BossLevelSystem : MonoBehaviour
     [Required]
     public GameObject wall = null;
     [Required]
-    public EntryDetection entryDetection = null;
+    public OverlapCollider entryDetection = null;
     [Required]
     public GameObject bossSpawnLocation = null;
     [Required]
@@ -34,15 +34,12 @@ public class BossLevelSystem : MonoBehaviour
     {
         levelSystem = GetComponent<LevelSystem>();
         levelSystem.OnPlayerEnter += LevelSystem_OnPlayerEnter;
-        entryDetection.OnEnter += EntryDetection_OnEnter;
     }
 
-    private void EntryDetection_OnEnter(object sender, EventArgs e)
+    public void EntryDetection_OnEnter(GameObject collider)
     {
         if (bossSpawned)
             return;
-
-        Collider collider = (Collider)sender;
 
         if(collider.tag =="Player")
         {
@@ -63,6 +60,7 @@ public class BossLevelSystem : MonoBehaviour
         EnnemySystem bossEnnemySystem = boss.GetComponent<EnnemySystem>();
         bossEnnemySystem.weapon = new WeaponB_AssaultRifle();
         bossEnnemySystem.OnDied += BossEnemySystem_OnDied;
+        levelSystem.OnPlayerFall.AddListener(LevelSystem_OnPlayerFall);
     }
 
     private void BossEnemySystem_OnDied(object sender, EventArgs e)
@@ -76,10 +74,9 @@ public class BossLevelSystem : MonoBehaviour
         TeleporterSystem tp = levelSystem.teleportersExit.transform.GetChild(0).GetComponent<TeleporterSystem>();
         tp.isBossTeleporter = true;
         tp.OnLevelComplete += Tp_OnLevelComplete;
-        levelSystem.OnPlayerFall += LevelSystem_OnPlayerFall;
     }
 
-    private void LevelSystem_OnPlayerFall(object sender, EventArgs e)
+    private void LevelSystem_OnPlayerFall(GameObject collider)
     {
         playerSystem.TeleportCharacter(playerRespawnTeleporter.transform.position);
     }

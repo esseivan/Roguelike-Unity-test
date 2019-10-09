@@ -90,14 +90,13 @@ public class WeaponSystem : MonoBehaviour
         // Create object at shooter location with default rotation
         GameObject bullet = Instantiate(bulletObject, shootFrom.position, Quaternion.Euler(bulletObject.transform.eulerAngles));
         // Set tag, whether ennemy or player bullet
-        bullet.tag = isEnnemy ? "EnnemyBullet" : "PlayerBullet";
+        bullet.tag = "Bullet";
         // Set the same rotation as the ShootFrom object
         bullet.transform.rotation = Quaternion.Euler(bullet.transform.rotation.eulerAngles + shootFrom.rotation.eulerAngles);
         // Set parameters
         BulletSystem bulletSystem = bullet.GetComponent<BulletSystem>();
         bulletSystem.damage = equipedWeapon.DamagePerShot;
         bulletSystem.lifeTime = equipedWeapon.BulletLifeTime;
-        bulletSystem.isEnnemy = isEnnemy;
         // Set shooter, shooter don't trigger collisions from his bullets
         bulletSystem.shooter = gameObject;
         // Enable bullet lifetime
@@ -122,7 +121,7 @@ public class WeaponSystem : MonoBehaviour
         // Create object at shooter location
         GameObject bullet = Instantiate(bulletObject, shootFrom.transform.position, Quaternion.Euler(bulletObject.transform.eulerAngles));
         // Set tag, whether ennemy or player bullet
-        bullet.tag = isEnnemy ? "EnnemyBullet" : "PlayerBullet";
+        bullet.tag = "Bullet";
         // Get default rotation
         Quaternion rotation = bullet.transform.rotation;
         // Orientate object
@@ -136,7 +135,6 @@ public class WeaponSystem : MonoBehaviour
         BulletSystem bulletSystem = bullet.GetComponent<BulletSystem>();
         bulletSystem.damage = equipedWeapon.DamagePerShot;
         bulletSystem.lifeTime = equipedWeapon.BulletLifeTime;
-        bulletSystem.isEnnemy = isEnnemy;
         // Set shooter, shooter don't trigger collisions from his bullets
         bulletSystem.shooter = gameObject;
         // Enable bullet lifetime

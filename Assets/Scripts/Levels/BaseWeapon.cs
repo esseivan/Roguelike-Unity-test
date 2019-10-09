@@ -7,7 +7,7 @@ public class BaseWeapon
     public string Name { get; set; } = "Unknown";
     public int AmmoPerShot { get; set; } = 1;
     public int BulletPerShot { get; set; } = 1;
-    public AmmoType CompatibleTypes { get; set; } = (AmmoType)0b11111111;
+    public BulletType CompatibleTypes { get; set; } = (BulletType)0b11111111;
     public float DamagePerShot { get; set; } = 30;
     public int MaxAmmoPerMagazine { get; set; } = 30;
     public int MaxTotalAmmo { get; set; } = 100;
@@ -125,7 +125,7 @@ public class BaseWeapon
         scaled.FireRate = source.FireRate / fireRateScaler;
     }
 
-    public bool IsAmmoCompatible(AmmoType ammoType)
+    public bool IsAmmoCompatible(BulletType ammoType)
     {
         if ((ammoType & CompatibleTypes) != 0)
             return true;
@@ -142,7 +142,7 @@ BulletLifeTime : {BulletLifeTime}
 DelayBetweenShots : {FireRate}";
     }
 
-    public enum AmmoType
+    public enum BulletType
     {
         Normal = 1,
         Piercing = 2,

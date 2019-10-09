@@ -275,6 +275,11 @@ MonoBehaviour:
   levelIndex: 0
   levelSize: {fileID: 4500980740184422330}
   spawnChance: 2
+  OnPlayerFall:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: OverlapCollider+OnTriggerEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   playerSystem: {fileID: 0}
 --- !u!114 &9182212152824070809
 MonoBehaviour:
@@ -551,6 +556,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2615795434106432084, guid: 2a168fd3b31299d45829b1fab589fc38,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2615795434106432084, guid: 2a168fd3b31299d45829b1fab589fc38,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3297807539846892643}
+    - target: {fileID: 2615795434106432084, guid: 2a168fd3b31299d45829b1fab589fc38,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: FallDetector_OnEnter
+      objectReference: {fileID: 0}
+    - target: {fileID: 2615795434106432084, guid: 2a168fd3b31299d45829b1fab589fc38,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2615795434106432084, guid: 2a168fd3b31299d45829b1fab589fc38,
+        type: 3}
+      propertyPath: m_OnEnter.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a168fd3b31299d45829b1fab589fc38, type: 3}

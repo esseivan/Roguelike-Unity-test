@@ -16,7 +16,7 @@ public class LevelSystem : MonoBehaviour
     /// The fall detection script
     /// </summary>
     [Required]
-    public EntryDetection fallDetector = null;
+    public OverlapCollider fallDetector = null;
 
     /// <summary>
     /// The exit teleporters parent
@@ -66,8 +66,8 @@ public class LevelSystem : MonoBehaviour
     public event EventHandler OnPlayerExit = null;
     /// <summary>
     /// When the player fall in the void
-    /// </summary>
-    public event EventHandler OnPlayerFall = null;
+    /// </summary
+    public OnTriggerEvent OnPlayerFall = new OnTriggerEvent();
     /// <summary>
     /// All ennemies died event
     /// </summary>
@@ -105,7 +105,6 @@ public class LevelSystem : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        fallDetector.OnEnter += FallDetector_OnEnter;
         if (ennemyGenerationSystem != null)
         {
             ennemyGenerationSystem.OnEnnemyDied += EnnemyGenerationSystem_OnEnnemyDied;
@@ -185,16 +184,14 @@ public class LevelSystem : MonoBehaviour
     /// <summary>
     /// Fall detected event
     /// </summary>
-    private void FallDetector_OnEnter(object sender, EventArgs e)
+    public void FallDetector_OnEnter(GameObject collider)
     {
-        Collider collider = (Collider)sender;
-
         if (collider.tag == "Player")
         {
             if (OnPlayerFall == null && playerSystem != null)
                 playerSystem.TeleportCharacter(teleporterEntry.transform.position);
             else
-                OnPlayerFall?.Invoke(sender, e);
+                OnPlayerFall?.Invoke(collider);
         }
         else if (collider.tag == "Ennemy")
         {

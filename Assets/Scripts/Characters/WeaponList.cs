@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Weapons
+// List of weapons
 public class Weapon_AssaultRifle : BaseWeapon.BaseWeaponModifier
 {
     public override void SetTarget(BaseWeapon target)

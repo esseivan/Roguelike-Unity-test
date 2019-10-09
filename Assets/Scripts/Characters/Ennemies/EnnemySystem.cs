@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Manage an ennemy
+/// Implement weapons, aim
 /// </summary>
-[RequireComponent(typeof(WeaponSystem), typeof(HealthSystem))]
+[RequireComponent(typeof(WeaponSystem), typeof(CharacterSystem))]
 public class EnnemySystem : MonoBehaviour
 {
     /// <summary>
@@ -31,7 +31,7 @@ public class EnnemySystem : MonoBehaviour
     /// The body collider object. Used to detect collision on ennemy
     /// </summary>
     [Required]
-    public EntryDetection bodyCollider = null;
+    public OverlapCollider bodyCollider = null;
 
     ///// <summary>
     ///// Wheter ennemies automatically face the target
@@ -46,16 +46,17 @@ public class EnnemySystem : MonoBehaviour
     public BaseWeapon baseWeapon = null;
     public BaseWeapon scaledWeapon = null;
 
-    private Collider lastCollider = null;
+    private GameObject lastCollider = null;
     private HealthSystem lastContact = null;
     private bool isInContact = false;
     private float timeCounter = 0;
 
     private WeaponSystem weaponSystem = null;
     private HealthSystem healthSystem = null;
-    private EntryDetection entryDetector = null;
+    private OverlapCollider entryDetector = null;
 
     private GameObject target = null;
+    private CharacterSystem characterSystem = null;
 
     static float DifficultyScaler { get; set; }
     float difficulty;
@@ -77,11 +78,11 @@ public class EnnemySystem : MonoBehaviour
         weaponSystem.EquipWeapon(scaledWeapon);
         healthSystem = GetComponent<HealthSystem>();
         healthSystem.OnDied += HealthSystem_OnDied;
-        entryDetector = rangeDetection.GetComponent<EntryDetection>();
-        entryDetector.OnEnter += EntryDetection_OnEnter;
-        entryDetector.OnExit += EntryDetection_OnExit;
-        bodyCollider.OnEnter += BodyCollider_OnEnter;
-        bodyCollider.OnExit += BodyCollider_OnExit;
+        characterSystem = GetComponent<CharacterSystem>();
+        characterSystem.OnPlayerCollisionEnter.AddListener(BodyCollider_OnEnter);
+        characterSystem.OnPlayerCollisionExit.AddListener(BodyCollider_OnExit);
+        entryDetector = rangeDetection.GetComponent<OverlapCollider>();
+        entryDetector.m_OnEnter.AddListener(EntryDetection_OnEnter);
         rangeDetection.transform.localScale = new Vector3(targettingRange, 1, targettingRange);
     }
 
@@ -92,52 +93,35 @@ public class EnnemySystem : MonoBehaviour
         weaponSystem.EquipWeapon(scaledWeapon);
     }
 
-    private void BodyCollider_OnExit(object sender, System.EventArgs e)
+    public void BodyCollider_OnExit(GameObject collider)
     {
-        Collider collider = (Collider)sender;
-        if (collider == lastCollider)
-        {
-            lastCollider = null;
-            isInContact = false;
-            lastContact = null;
-            timeCounter = 0;
-        }
+        lastCollider = null;
+        isInContact = false;
+        lastContact = null;
+        timeCounter = 0;
     }
 
-    private void BodyCollider_OnEnter(object sender, System.EventArgs e)
+    public void BodyCollider_OnEnter(GameObject collider)
     {
-        Collider collider = (Collider)sender;
+        lastContact = collider.gameObject.GetComponent<HealthSystem>();
+        lastCollider = collider;
+        isInContact = true;
+        timeCounter = 0;
+    }
 
+    public void EntryDetection_OnExit(GameObject collider)
+    {
         if (collider.tag == "Player")
-        {
-            lastContact = collider.gameObject.GetComponent<HealthSystem>();
-            lastCollider = collider;
-            isInContact = true;
-            timeCounter = 0;
-        }
-        else if (collider.tag == "PlayerBullet" || collider.tag == "EnnemyBullet")
-        {
-            BulletSystem bulletSystem = collider.GetComponent<BulletSystem>();
-            if (bulletSystem.isActive && bulletSystem.shooter != gameObject)
-                healthSystem.TakeDamage(bulletSystem.damage);
-        }
-    }
-
-    private void EntryDetection_OnExit(object sender, System.EventArgs e)
-    {
-        Collider tempTarget = (Collider)sender;
-        if (tempTarget.tag == "Player")
         {
             target = null;
         }
     }
 
-    private void EntryDetection_OnEnter(object sender, System.EventArgs e)
+    public void EntryDetection_OnEnter(GameObject collider)
     {
-        Collider tempTarget = (Collider)sender;
-        if (tempTarget.tag == "Player")
+        if (collider.tag == "Player")
         {
-            target = tempTarget.gameObject;
+            target = collider;
         }
     }
 
