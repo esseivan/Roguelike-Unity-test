@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Move a character according to keyboard input. Character Controller component required
+/// Manage the use of inputs
 /// </summary>
-[RequireComponent(typeof(CharacterController), typeof(RaycastSystem))]
+[RequireComponent(typeof(PlayerInputDecoder), typeof(RaycastSystem), typeof(CharacterController))]
 public class PlayerInputSystem : MonoBehaviour
 {
+    #region Inspector
+
     /// <summary>
     /// Speed mofidier
     /// </summary>
@@ -18,7 +20,7 @@ public class PlayerInputSystem : MonoBehaviour
     /// <summary>
     /// Constant speed modifier
     /// </summary>
-    public float ConstantSpeedMod { get; private set; } = 350;
+    public const float SPEED_MOD_CONST = 350;
 
     /// <summary>
     /// Whether sprint is enabled
@@ -28,6 +30,7 @@ public class PlayerInputSystem : MonoBehaviour
     /// Sprint speed modifier
     /// </summary>
     [ShowIf("canSprint")]
+    [MinValue(1)]
     public float sprintSpeedMod = 2;
 
     /// <summary>
@@ -44,6 +47,7 @@ public class PlayerInputSystem : MonoBehaviour
     /// </summary>
     [ShowIf("canZoom")]
     public CameraFollow cam = null;
+
     /// <summary>
     /// Whether jump is enabled
     /// </summary>
@@ -52,26 +56,24 @@ public class PlayerInputSystem : MonoBehaviour
     /// The jump factor
     /// </summary>
     [ShowIf("canJump")]
+    [MinValue(0)]
     public float jumpSpeed = 8.0f;
 
     /// <summary>
-    /// Whether right and left rotate or move
+    /// Whether the map can be open
     /// </summary>
-    public bool rotateOnRightLeft = false;
-    /// <summary>
-    /// Constant rotate speed modifier
-    /// </summary>
-    [ShowIf("rotateOnRightLeft")]
-    public float constantRotateMod = 250;
-
     public bool canOpenMap = false;
     [ShowIf("canOpenMap"), Required]
-    public RectTransform sublevelGridmap = null;
-    [ShowIf("canOpenMap"), Required]
-    public RectTransform sublevelGridmapBorder = null;
+    public MapSystem mapSystem = null;
+
+    #endregion
 
     /// <summary>
-    /// The Character controller
+    /// Input decoder
+    /// </summary>
+    private PlayerInputDecoder playerInputDecoder = null;
+    /// <summary>
+    /// Character controller
     /// </summary>
     private CharacterController controller = null;
     /// <summary>
@@ -87,101 +89,62 @@ public class PlayerInputSystem : MonoBehaviour
     /// </summary>
     private RaycastSystem raycastSystem = null;
 
-    private bool isMapOpen = false;
-
     // Start is called before the first frame update
     void Start()
     {
-        controller = GetComponent<CharacterController>();
+        playerInputDecoder = GetComponent<PlayerInputDecoder>();
+        playerInputDecoder.AutoUpdate = false;
         player = GetComponent<Transform>();
+        controller = GetComponent<CharacterController>();
         weaponSystem = GetComponent<WeaponSystem>();
         raycastSystem = GetComponent<RaycastSystem>();
     }
 
     void Update()
     {
-        /*** Movements ***/
-        // Get axis input
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        // Get delta time
-        float delta = Time.deltaTime;
-        if (delta >= 0.05f)
-            delta = 0.05f;
+        // Get input data
+        InputData inputData = playerInputDecoder.GetData();
 
-        // Get forward vector
-        Vector3 move = player.forward * v;
-        // Move if rotate disabled
-        if (!rotateOnRightLeft)
-            move += player.right * h;
-        // Rotate if enabled
-        else
-            player.Rotate(player.up, Input.GetAxis("Horizontal") * constantRotateMod * delta);
+        // Set maximum delta time to prevent very quick movement when freezes happens
+        if (inputData.DeltaTime > 0.05f)
+            inputData.DeltaTime = 0.05f;
 
-        // If magnitude greater than 1, normalize to be 1
+        // Get movement vector
+        Vector3 move = player.forward * inputData.Axis.y + player.right * inputData.Axis.x;
+        // Normalize if greater than 1
         if (move.magnitude > 1)
-            move = move.normalized;
+            move.Normalize();
 
-        /*** Sprint ***/
-        if (canSprint && Input.GetButton("Sprint"))
-        {
-            // Apply sprint speed modifier
+        // Apply speed mod
+        move *= speedMod * SPEED_MOD_CONST * inputData.DeltaTime;
+
+        // Apply sprint
+        if (inputData.Sprint && canSprint)
             move *= sprintSpeedMod;
-        }
-        /*** Jump ***/
-        if (Input.GetButton("Jump"))
-        {
-            move.y = jumpSpeed;
-        }
 
-        // Apply speed mod and deltaTime
-        move = move * speedMod * ConstantSpeedMod * delta;
+        // Apply jump
+        if (inputData.Jump && canJump)
+            move.y = jumpSpeed;
+
+        // Toggle map
+        if (inputData.Map && canOpenMap)
+            mapSystem.ToggleMap();
+
+        // Zoom
+        if (canZoom && inputData.Zoom != 0)
+        {
+            bool quickZoom = inputData.Sprint && quickZoomOnSprintKey;
+            if (inputData.Zoom > 0)
+                cam.Zoom(quickZoom);
+            else
+                cam.UnZoom(quickZoom);
+        }
 
         // Do simple move (with gravity)
         controller.SimpleMove(move);
 
-        /*** Map ***/
-        if (canOpenMap)
-        {
-            if (Input.GetButtonDown("OpenMap"))
-            {
-                isMapOpen = !isMapOpen;
-                if (isMapOpen)
-                {
-                    sublevelGridmap.GetComponent<Fullscrenable>().SetFullscreen();
-                    sublevelGridmapBorder.GetComponent<Fullscrenable>().SetFullscreen();
-                }
-                else
-                {
-                    sublevelGridmap.GetComponent<Fullscrenable>().UnsetFullscreen();
-                    sublevelGridmapBorder.GetComponent<Fullscrenable>().UnsetFullscreen();
-                }
-            }
-        }
-
-        /*** Zoom ***/
-        // If zoom enabled
-        if (canZoom)
-        {
-            // Get scrollWheel input
-            float zoomMod = Input.GetAxis("Mouse ScrollWheel");
-
-            bool state = false;
-            if (quickZoomOnSprintKey)
-                state = Input.GetButton("Sprint");
-
-            // Zoom the camera
-            if (zoomMod < 0)
-                cam.Zoom(state);
-            else if (zoomMod > 0)
-                cam.UnZoom(state);
-        }
-
-        /*** Shoot ***/
-        // Left click
-        if (Input.GetMouseButton(0))
-        {
+        // Shoot with left click
+        if (inputData.LeftClick)
             weaponSystem.Shoot(raycastSystem.lastHit.point);
-        }
     }
 }

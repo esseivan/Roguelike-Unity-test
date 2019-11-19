@@ -88,10 +88,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6555525416530913596}
   - component: {fileID: 8285637875032636059}
-  - component: {fileID: 7635091409775669381}
   - component: {fileID: 1790509663466013087}
-  - component: {fileID: 8766575614175267550}
   - component: {fileID: 3036644110912854755}
+  - component: {fileID: 1387135285067917265}
+  - component: {fileID: 7486355379679808887}
+  - component: {fileID: 7584250391258576511}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -131,24 +132,7 @@ MonoBehaviour:
   shootFrom: {fileID: 0}
   rotateFrom: {fileID: 0}
   shootSpeed: 0
---- !u!114 &7635091409775669381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1976271095404824077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bddceb97f18fc484585d7f547b381808, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletObject: {fileID: 2888805938140403628, guid: 2922eec7778d8a84fb73bf8e0ed6e851,
-    type: 3}
-  shootFrom: {fileID: 2927047213082193021}
-  isEnnemy: 1
-  rotateFrom: {fileID: 6555525416530913596}
-  target: {fileID: 0}
+  AimOnUpdate: 1
 --- !u!114 &1790509663466013087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,24 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8566d951063544fa700198276ad02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  health: 0
---- !u!114 &8766575614175267550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1976271095404824077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc39cc6f07b7f2c4a8100b40b2a06d60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fixedTarget: {fileID: 0}
-  shootFrom: {fileID: 2927047213082193021}
-  rotateFrom: {fileID: 0}
-  shootSpeed: 0
+  maxHealth: 1000
 --- !u!114 &3036644110912854755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,11 +158,88 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cc74966db59b4459ab48650bb40536, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contactDamage: 5
+  contactDamage: 20
   contactDamageEveryXsec: 0.2
   targettingRange: 100
   rangeDetection: {fileID: 3862522848887571301}
   bodyCollider: {fileID: 769840983152196863}
+  baseWeapon: {fileID: 0}
+  scaledWeapon: {fileID: 0}
+--- !u!114 &1387135285067917265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976271095404824077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ba8e22416449b46ad86fc631b71272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletObject: {fileID: 2888805938140403628, guid: 2922eec7778d8a84fb73bf8e0ed6e851,
+    type: 3}
+  equipedWeapon: {fileID: 0}
+  shootFrom: {fileID: 6555525416530913596}
+  isEnnemy: 1
+  aimSystem: {fileID: 8285637875032636059}
+  rotateFrom: {fileID: 6555525416530913596}
+  target: {fileID: 0}
+--- !u!114 &7486355379679808887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976271095404824077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 930fc7caab4ba9b48a9d0005cf7ca3c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodyCollider: {fileID: 769840983152196863}
+  OnCollisionEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerCollisionEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerCollisionExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBulletCollisionEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBulletCollisionExit:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &7584250391258576511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976271095404824077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b3cfa97c9ed8a4db62f1a9cfc10a10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Unknown
+  AmmoPerShot: 1
+  BulletPerShot: 1
+  CompatibleTypes: 255
+  DamagePerShot: 30
+  MaxAmmoPerMagazine: 30
+  MaxTotalAmmo: 100
+  ShootSpeed: 10
+  ReloadTime: 1
+  BulletLifeTime: 2
+  FireRate: 0.5
+  DelayWeaponSwitch: 1
 --- !u!1 &3699607640248891060
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,38 +377,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdf2b8fb78cd6c44f904e3b2a468eeba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OnEnter:
+  OnEnter:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3036644110912854755}
-        m_MethodName: EntryDetection_OnEnter
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: OverlapCollider+OnTriggerEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  m_OnExit:
+      m_Calls: []
+  OnExit:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3036644110912854755}
-        m_MethodName: EntryDetection_OnExit
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: OverlapCollider+OnTriggerEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+      m_Calls: []
 --- !u!1 &4368997915347366850
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,38 +537,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdf2b8fb78cd6c44f904e3b2a468eeba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OnEnter:
+  OnEnter:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3036644110912854755}
-        m_MethodName: BodyCollider_OnEnter
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: OverlapCollider+OnTriggerEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  m_OnExit:
+      m_Calls: []
+  OnExit:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3036644110912854755}
-        m_MethodName: BodyCollider_OnExit
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: OverlapCollider+OnTriggerEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+      m_Calls: []
 --- !u!1 &6571756743147411458
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,7 +758,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4489455687744991095
 Transform:
   m_ObjectHideFlags: 0

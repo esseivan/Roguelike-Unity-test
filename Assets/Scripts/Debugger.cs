@@ -20,7 +20,7 @@ public class Debugger : MonoBehaviour
 
     private void Start()
     {
-        playerSystem.weapon = new Weapon_GOD();
+        playerSystem.weaponModifier = new Weapon_GOD();
         playerSystem.GetComponent<PlayerInputSystem>().speedMod *= 4;
         playerSystem.OnLevelChanged += PlayerSystem_OnLevelChanged;
     }

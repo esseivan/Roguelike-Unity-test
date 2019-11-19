@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7351704438496586430}
   - component: {fileID: 7351704438496586431}
+  - component: {fileID: 7351704436932608518}
   m_Layer: 0
   m_Name: LevelMapGenerator
   m_TagString: Untagged
@@ -47,3 +48,17 @@ MonoBehaviour:
   gridItemObject: {fileID: 0}
   width: 400
   height: 400
+--- !u!114 &7351704436932608518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7351704438496586429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc06b8d7ef21c224fafb8967ae3942ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sublevelGridmap: {fileID: 0}
+  sublevelGridmapBorder: {fileID: 0}

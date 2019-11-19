@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Weapon system to manage weapons and shooting
+/// Manage weapons and shooting
 /// </summary>
-[RequireComponent(typeof(BaseAimSystem))]
+[RequireComponent(typeof(BaseWeapon))]
 public class WeaponSystem : MonoBehaviour
 {
     /// <summary>
@@ -31,32 +31,33 @@ public class WeaponSystem : MonoBehaviour
     /// </summary>
     public bool isEnnemy = true;
     /// <summary>
-    /// From where the rotation is made
+    /// The aim system used
+    /// </summary>
+    [Required, ShowIf("isEnnemy")]
+    public BaseAimSystem aimSystem = null;
+    /// <summary>
+    /// From where the rotation is made when aiming. Should be a parent of shootFrom
     /// </summary>
     [Required, ShowIf("isEnnemy")]
     public Transform rotateFrom = null;
 
     /// <summary>
-    /// The target to be shoot at
+    /// The target to be shoot at (when the parent is an ennemy)
     /// </summary>
     [HideInInspector]
     public GameObject target = null;
 
-    // Time counter variables
+
+    // Time counter variables to wait the firerate time
     private float timeCounter = 0;
     private bool isWaiting = false;
     private float waitTime = 0;
-
-    /// <summary>
-    /// The aim system used
-    /// </summary>
-    private BaseAimSystem aimSystem = null;
 
     private void Start()
     {
         if (isEnnemy)
         {
-            // Get the aim system
+            // Get the aim system for the ennemy
             aimSystem = GetComponent<BaseAimSystem>();
             aimSystem.shootFrom = this.shootFrom;
             aimSystem.rotateFrom = this.rotateFrom;
@@ -64,45 +65,29 @@ public class WeaponSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// Shoot if available
+    /// Shoot if available. With aim
     /// </summary>
     public void Shoot()
     {
-        Vector3 shootTo = shootFrom.position + shootFrom.forward * 10;
-        Debug.DrawLine(shootFrom.position, shootTo, Color.green);
-
         // If waiting, don't shoot
         if (isWaiting)
             return;
+
+        // Where to shoot
+        Vector3 shootTo = shootFrom.position + shootFrom.forward;
+        Debug.DrawLine(shootFrom.position, shootTo, Color.green);
 
         // Wait the specified time : Fire rate
         isWaiting = true;
         waitTime = equipedWeapon.FireRate;
 
+        //// Get aim
         aimSystem.shootSpeed = equipedWeapon.ShootSpeed;
         aimSystem.fixedTarget = target;
-        rotateFrom.LookAt(target.transform);
-        Vector3 angles = rotateFrom.eulerAngles;
-        angles.x = 0;
-        rotateFrom.rotation = Quaternion.Euler(angles);
-        rotateFrom.Rotate(rotateFrom.up, aimSystem.GetAim());
 
-        // Create object at shooter location with default rotation
-        GameObject bullet = Instantiate(bulletObject, shootFrom.position, Quaternion.Euler(bulletObject.transform.eulerAngles));
-        // Set tag, whether ennemy or player bullet
-        bullet.tag = "Bullet";
-        // Set the same rotation as the ShootFrom object
-        bullet.transform.rotation = Quaternion.Euler(bullet.transform.rotation.eulerAngles + shootFrom.rotation.eulerAngles);
-        // Set parameters
-        BulletSystem bulletSystem = bullet.GetComponent<BulletSystem>();
-        bulletSystem.damage = equipedWeapon.DamagePerShot;
-        bulletSystem.lifeTime = equipedWeapon.BulletLifeTime;
-        // Set shooter, shooter don't trigger collisions from his bullets
-        bulletSystem.shooter = gameObject;
-        // Enable bullet lifetime
-        bulletSystem.isActive = true;
-        // Set force
-        bullet.GetComponent<Rigidbody>().AddForce(100 * shootFrom.forward * equipedWeapon.ShootSpeed, ForceMode.Force);
+        aimSystem.Aim();
+
+        TerminateShoot(shootTo);
     }
 
     /// <summary>
@@ -118,10 +103,13 @@ public class WeaponSystem : MonoBehaviour
         isWaiting = true;
         waitTime = equipedWeapon.FireRate;
 
+        TerminateShoot(shootTo);
+    }
+
+    private void TerminateShoot(Vector3 shootTo)
+    {
         // Create object at shooter location
         GameObject bullet = Instantiate(bulletObject, shootFrom.transform.position, Quaternion.Euler(bulletObject.transform.eulerAngles));
-        // Set tag, whether ennemy or player bullet
-        bullet.tag = "Bullet";
         // Get default rotation
         Quaternion rotation = bullet.transform.rotation;
         // Orientate object
@@ -129,18 +117,18 @@ public class WeaponSystem : MonoBehaviour
         rotation.SetLookRotation(shootTo - bullet.transform.position, Vector3.up);
         // Remove x component, shoot parallel to ground
         Vector3 angles = rotation.eulerAngles;
-        angles.x = 0;
+        angles.x = angles.z = 0;
         bullet.transform.rotation = Quaternion.Euler(angles);
         // Set parameters
         BulletSystem bulletSystem = bullet.GetComponent<BulletSystem>();
         bulletSystem.damage = equipedWeapon.DamagePerShot;
-        bulletSystem.lifeTime = equipedWeapon.BulletLifeTime;
+        bulletSystem.LifeTime = equipedWeapon.BulletLifeTime;
         // Set shooter, shooter don't trigger collisions from his bullets
         bulletSystem.shooter = gameObject;
         // Enable bullet lifetime
         bulletSystem.isActive = true;
         // Set force
-        bullet.GetComponent<Rigidbody>().AddForce(100 * bullet.transform.forward * equipedWeapon.ShootSpeed, ForceMode.Force);
+        bullet.GetComponent<Rigidbody>().AddForce(BaseWeapon.SHOOT_SPEED_CONST_MOD * bullet.transform.forward * equipedWeapon.ShootSpeed, ForceMode.Force);
     }
 
     /// <summary>

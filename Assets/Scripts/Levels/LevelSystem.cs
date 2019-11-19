@@ -67,7 +67,7 @@ public class LevelSystem : MonoBehaviour
     /// <summary>
     /// When the player fall in the void
     /// </summary
-    public OnTriggerEvent OnPlayerFall = new OnTriggerEvent();
+    public event EventHandler<Collider> OnPlayerFall = null;
     /// <summary>
     /// All ennemies died event
     /// </summary>
@@ -110,6 +110,8 @@ public class LevelSystem : MonoBehaviour
             ennemyGenerationSystem.OnEnnemyDied += EnnemyGenerationSystem_OnEnnemyDied;
             ennemyGenerationSystem.OnAllEnnemiesDied += EnnemyGenerationSystem_OnAllEnnemiesDied;
         }
+
+        fallDetector.OnEnter.AddListener(FallDetector_OnEnter);
     }
 
     /// <summary>
@@ -184,14 +186,17 @@ public class LevelSystem : MonoBehaviour
     /// <summary>
     /// Fall detected event
     /// </summary>
-    public void FallDetector_OnEnter(GameObject collider)
+    public void FallDetector_OnEnter(Collider collider)
     {
         if (collider.tag == "Player")
         {
             if (OnPlayerFall == null && playerSystem != null)
+            {
                 playerSystem.TeleportCharacter(teleporterEntry.transform.position);
+                playerSystem.TakeDamage(10);
+            }
             else
-                OnPlayerFall?.Invoke(collider);
+                OnPlayerFall?.Invoke(this, collider);
         }
         else if (collider.tag == "Ennemy")
         {

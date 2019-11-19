@@ -1,19 +1,29 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manage health
+/// </summary>
 public class HealthSystem : MonoBehaviour
 {
     /// <summary>
     /// The maximum health the character can have
     /// </summary>
-    public float maxHealth = 100;
+    public int maxHealth = 100;
 
     /// <summary>
     /// The current health of the character
     /// </summary>
-    public float health = 0;
+    [ShowInInspector]
+    private int health = 0;
+
+    public int GetHealth()
+    {
+        return health;
+    }
 
     /// <summary>
     /// The OnDied event, called when health reachs 0 through TakeDamage method
@@ -27,28 +37,41 @@ public class HealthSystem : MonoBehaviour
     }
 
     /// <summary>
+    /// Kill the player
+    /// </summary>
+    public void Kill()
+    {
+        TakeDamage(health);
+    }
+
+    public void Resurrect(float health)
+    {
+        GiveHealth(maxHealth);
+    }
+
+    /// <summary>
     /// Take damage
     /// </summary>
     /// <param name="amount">Damage to take, greater than 0</param>
-    public void TakeDamage(float amount)
+    public void TakeDamage(int amount)
     {
         if (amount <= 0)
             return;
 
-        health -= amount;
-
-        if(health <= 0)
+        if ((health - amount) <= 0)
         {
             health = 0;
             OnDied?.Invoke(this.gameObject, EventArgs.Empty);
         }
+        else
+            health -= amount;
     }
 
     /// <summary>
     /// Heal the character
     /// </summary>
     /// <param name="amount">Health to give, greater than 0</param>
-    public void GiveHealth(float amount)
+    public void GiveHealth(int amount)
     {
         if (amount <= 0)
             return;
@@ -64,14 +87,11 @@ public class HealthSystem : MonoBehaviour
     /// Set the current health
     /// </summary>
     /// <param name="amount">Health, greater or equal than 0, lesser than maxHealth. Doesn't trigger the OnDied event</param>
-    public void SetHealth(float amount)
+    public void SetHealth(int amount)
     {
         if (amount < 0)
             return;
 
-        health = amount;
-
-        if (health > maxHealth)
-            maxHealth = health;
+        health = amount >= maxHealth ? maxHealth : amount;
     }
 }

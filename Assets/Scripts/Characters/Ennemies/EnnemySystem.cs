@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Implement weapons, aim
 /// </summary>
-[RequireComponent(typeof(WeaponSystem), typeof(CharacterSystem))]
+[RequireComponent(typeof(WeaponSystem), typeof(CharacterCollisionSystem), typeof(BaseAimSystem))]
 public class EnnemySystem : MonoBehaviour
 {
     /// <summary>
@@ -54,9 +54,12 @@ public class EnnemySystem : MonoBehaviour
     private WeaponSystem weaponSystem = null;
     private HealthSystem healthSystem = null;
     private OverlapCollider entryDetector = null;
+    private BaseAimSystem aimSystem = null;
 
     private GameObject target = null;
-    private CharacterSystem characterSystem = null;
+    private CharacterCollisionSystem collisionSystem = null;
+
+    public GameObject GetTarget() => target;
 
     static float DifficultyScaler { get; set; }
     float difficulty;
@@ -72,28 +75,32 @@ public class EnnemySystem : MonoBehaviour
         weaponSystem.isEnnemy = true;
         // create scaled weapon
         difficulty = DifficultyScaler;
-        baseWeapon = weapon.CreateTarget();
-        scaledWeapon = weapon.CreateTarget().Scale(difficulty);
+        baseWeapon = GetComponent<BaseWeapon>();
+        scaledWeapon = baseWeapon.Clone().Scale(difficulty);
         // Equip new weapon
         weaponSystem.EquipWeapon(scaledWeapon);
+        aimSystem = GetComponent<BaseAimSystem>();
+
         healthSystem = GetComponent<HealthSystem>();
         healthSystem.OnDied += HealthSystem_OnDied;
-        characterSystem = GetComponent<CharacterSystem>();
-        characterSystem.OnPlayerCollisionEnter.AddListener(BodyCollider_OnEnter);
-        characterSystem.OnPlayerCollisionExit.AddListener(BodyCollider_OnExit);
+        collisionSystem = GetComponent<CharacterCollisionSystem>();
+        collisionSystem.OnPlayerCollisionEnter.AddListener(BodyCollider_OnEnter);
+        collisionSystem.OnPlayerCollisionExit.AddListener(BodyCollider_OnExit);
+        collisionSystem.OnBulletCollisionEnter.AddListener(OnBulletCollision);
+
         entryDetector = rangeDetection.GetComponent<OverlapCollider>();
-        entryDetector.m_OnEnter.AddListener(EntryDetection_OnEnter);
+        entryDetector.OnEnter.AddListener(EntryDetection_OnEnter);
         rangeDetection.transform.localScale = new Vector3(targettingRange, 1, targettingRange);
     }
 
     public void EquipWeapon(BaseWeapon.BaseWeaponModifier weapon)
     {
-        baseWeapon = weapon.CreateTarget();
-        scaledWeapon = weapon.CreateTarget().Scale(difficulty);
+        weapon.SetTarget(baseWeapon);
+        scaledWeapon = baseWeapon.Clone().Scale(difficulty);
         weaponSystem.EquipWeapon(scaledWeapon);
     }
 
-    public void BodyCollider_OnExit(GameObject collider)
+    public void BodyCollider_OnExit(Collider collider)
     {
         lastCollider = null;
         isInContact = false;
@@ -101,15 +108,15 @@ public class EnnemySystem : MonoBehaviour
         timeCounter = 0;
     }
 
-    public void BodyCollider_OnEnter(GameObject collider)
+    public void BodyCollider_OnEnter(Collider collider)
     {
         lastContact = collider.gameObject.GetComponent<HealthSystem>();
-        lastCollider = collider;
+        lastCollider = collider.gameObject;
         isInContact = true;
         timeCounter = 0;
     }
 
-    public void EntryDetection_OnExit(GameObject collider)
+    public void EntryDetection_OnExit(Collider collider)
     {
         if (collider.tag == "Player")
         {
@@ -117,11 +124,11 @@ public class EnnemySystem : MonoBehaviour
         }
     }
 
-    public void EntryDetection_OnEnter(GameObject collider)
+    public void EntryDetection_OnEnter(Collider collider)
     {
         if (collider.tag == "Player")
         {
-            target = collider;
+            target = collider.gameObject;
         }
     }
 
@@ -131,27 +138,45 @@ public class EnnemySystem : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void LateUpdate()
+    public void OnBulletCollision(Collider other)
     {
-        //if (target != null && faceTarget)
-        //{
-        //    // Face the target
-        //    var targetRotation = Quaternion.LookRotation(target.transform.position - transform.position);
-        //    //var str = Mathf.Min(0.5f * Time.deltaTime, 1);
-        //    var str = 1;
-        //    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, str);
-        //}
+        // Check bullet source
+        BulletSystem bullet = other.GetComponent<BulletSystem>();
+        if (bullet.shooter != this.gameObject)
+        {
+            // Take damage
+            healthSystem.TakeDamage(bullet.damage);
+
+            bool destroyBullet = true;
+
+            // Check for bullet type
+            switch (bullet.type)
+            {
+                case BaseWeapon.BulletType.Piercing:
+                    destroyBullet = false;
+                    break;
+                case BaseWeapon.BulletType.Fire:
+                    break;
+                case BaseWeapon.BulletType.Ice:
+                    break;
+                default:
+                    break;
+            }
+
+            if (destroyBullet)
+                bullet.Destroy();
+        }
     }
 
     private void Update()
     {
         // Difficulty changed on the go
-        if (difficulty != DifficultyScaler)
+        if (difficulty != DifficultyScaler || true)
         {
             difficulty = DifficultyScaler;
             scaledWeapon.ScaleFrom(baseWeapon, difficulty);
         }
-
+        
         if (target != null)
         {
             weaponSystem.target = target;

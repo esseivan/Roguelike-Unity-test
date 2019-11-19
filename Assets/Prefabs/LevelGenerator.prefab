@@ -44,10 +44,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelsObject: {fileID: 0}
-  generateStartArea: 1
+  generateStartArea: 0
   startArea: {fileID: 7552130853282154175, guid: 49fba19c2c3404a4682e57555781e1bd,
     type: 3}
-  levelsToGenerate: 10
+  levelsToGenerate: 0
   levels:
   - {fileID: 7552130853282154175, guid: f559658d0e446844a9fc67badba429ca, type: 3}
   - {fileID: 7552130853282154175, guid: e8765815cd611404e97a9a5e9fc08f11, type: 3}

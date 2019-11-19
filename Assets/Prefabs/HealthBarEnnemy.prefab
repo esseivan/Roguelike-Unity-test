@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 862625688700502513}
   - component: {fileID: 6859753256228590179}
+  - component: {fileID: 7082337889179296993}
   m_Layer: 5
   m_Name: RedForeground
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1433033909260155072}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 0.3, z: 1}
+  m_LocalScale: {x: 1, y: 0.3, z: 1}
   m_Children: []
   m_Father: {fileID: 8750866523619325646}
   m_RootOrder: 1
@@ -74,12 +75,29 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.97, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7082337889179296993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433033909260155072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4c870f79cfc4234ca25d023acbc1222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StickRight: 1
+  defaultPos: -0
+  deltaPos: 0.5
+  defaultSize: 1
+  deltaSize: 1
 --- !u!1 &8750866523619325645
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,7 +124,7 @@ Transform:
   m_GameObject: {fileID: 8750866523619325645}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 1}
   m_Children:
   - {fileID: 8070900992734368433}
   - {fileID: 862625688700502513}
@@ -125,9 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15fdbb362f73f6740b1688e6f6b18331, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foreground: {fileID: 1433033909260155072}
-  defaultScale: 2
-  defaultLocation: 0
+  slider: {fileID: 7082337889179296993}
 --- !u!1 &9148683994033739615
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +170,7 @@ Transform:
   m_GameObject: {fileID: 9148683994033739615}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.1, y: 0.4, z: 1}
+  m_LocalScale: {x: 1.05, y: 0.4, z: 1}
   m_Children: []
   m_Father: {fileID: 8750866523619325646}
   m_RootOrder: 0

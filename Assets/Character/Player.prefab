@@ -119,12 +119,14 @@ GameObject:
   - component: {fileID: 2942840135945603175}
   - component: {fileID: 1935451744757522938}
   - component: {fileID: 1935451743751819769}
-  - component: {fileID: 1935451743751819768}
   - component: {fileID: 1935451743751819767}
   - component: {fileID: 1935451743751819766}
   - component: {fileID: 1935451743751819765}
   - component: {fileID: 4034782332683887037}
-  - component: {fileID: 2041867558}
+  - component: {fileID: 695843093}
+  - component: {fileID: 4752530812439498011}
+  - component: {fileID: 5704616726439684825}
+  - component: {fileID: 391348019}
   m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
@@ -180,23 +182,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  health: 0
---- !u!114 &1935451743751819768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2942840135945603174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bddceb97f18fc484585d7f547b381808, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletObject: {fileID: 2888805938140403628, guid: 30fe5bc60af53f74e8f42f7e592f2f5d,
-    type: 3}
-  shootFrom: {fileID: 1935451743968379643}
-  isEnnemy: 0
 --- !u!114 &1935451743751819767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,18 +215,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedMod: 1
-  canSprint: 0
+  canSprint: 1
   sprintSpeedMod: 2
   canZoom: 0
   quickZoomOnSprintKey: 0
   cam: {fileID: 0}
-  canJump: 0
+  canJump: 1
   jumpSpeed: 8
-  rotateOnRightLeft: 0
-  constantRotateMod: 250
-  canOpenMap: 0
-  sublevelGridmap: {fileID: 0}
-  sublevelGridmapBorder: {fileID: 0}
+  canOpenMap: 1
+  mapSystem: {fileID: 0}
 --- !u!114 &1935451743751819765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,7 +252,9 @@ MonoBehaviour:
   targetSpeed: 0
   targetPosition: {x: 0, y: 0, z: 0}
   targetDirection: {x: 0, y: 0, z: 0}
---- !u!114 &2041867558
+  alpha: 0
+  beta: 0
+--- !u!114 &695843093
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -279,12 +263,84 @@ MonoBehaviour:
   m_GameObject: {fileID: 2942840135945603174}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6367dba6d3da76c44b817315ace3ec9c, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c9b9acb6c7b49f41b84116cc44b4a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSpeed: 0
-  targetPosition: {x: 0, y: 0, z: 0}
-  targetDirection: {x: 0, y: 0, z: 0}
+--- !u!114 &4752530812439498011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2942840135945603174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ba8e22416449b46ad86fc631b71272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletObject: {fileID: 2888805938140403628, guid: 30fe5bc60af53f74e8f42f7e592f2f5d,
+    type: 3}
+  equipedWeapon: {fileID: 0}
+  shootFrom: {fileID: 1935451743968379643}
+  isEnnemy: 0
+  aimSystem: {fileID: 0}
+  rotateFrom: {fileID: 0}
+  target: {fileID: 0}
+--- !u!114 &5704616726439684825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2942840135945603174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 930fc7caab4ba9b48a9d0005cf7ca3c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodyCollider: {fileID: 504609542}
+  OnCollisionEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerCollisionEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerCollisionExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBulletCollisionEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBulletCollisionExit:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &391348019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2942840135945603174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b3cfa97c9ed8a4db62f1a9cfc10a10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Unknown
+  AmmoPerShot: 1
+  BulletPerShot: 1
+  CompatibleTypes: 255
+  DamagePerShot: 30
+  MaxAmmoPerMagazine: 30
+  MaxTotalAmmo: 100
+  ShootSpeed: 10
+  ReloadTime: 1
+  BulletLifeTime: 2
+  FireRate: 0.5
+  DelayWeaponSwitch: 1
 --- !u!1 &2942840137400014846
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,6 +372,24 @@ Transform:
   m_Father: {fileID: 2942840135945603175}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &504609542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3710341326147430225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdf2b8fb78cd6c44f904e3b2a468eeba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &577840385861609417
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -385,11 +459,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4285492820885618842, guid: 725d2e25ec6080649a1fdab6013b1b37,
         type: 3}
-      propertyPath: m_Enabled
-      value: 0
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 725d2e25ec6080649a1fdab6013b1b37, type: 3}
+--- !u!1 &3710341326147430225 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4285492820885618840, guid: 725d2e25ec6080649a1fdab6013b1b37,
+    type: 3}
+  m_PrefabInstance: {fileID: 577840385861609417}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3710341326147430224 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4285492820885618841, guid: 725d2e25ec6080649a1fdab6013b1b37,

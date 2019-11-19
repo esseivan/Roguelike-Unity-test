@@ -43,6 +43,9 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
+        if (target == null)
+            return;
+
         // Get y and z coordinates
         angleRad = Mathf.Deg2Rad * angle;
         float z = -Mathf.Cos(angleRad) * distance;

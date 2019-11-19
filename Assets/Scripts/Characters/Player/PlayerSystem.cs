@@ -4,8 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerInputSystem), typeof(CharacterController), typeof(WeaponSystem))]
-[RequireComponent(typeof(HealthSystem))]
+/// <summary>
+/// Manage a player
+/// </summary>
+[RequireComponent(typeof(PlayerInputSystem), typeof(WeaponSystem))]
+[RequireComponent(typeof(HealthSystem), typeof(CharacterCollisionSystem))]
 public class PlayerSystem : MonoBehaviour
 {
     /// <summary>
@@ -13,7 +16,12 @@ public class PlayerSystem : MonoBehaviour
     /// </summary>
     public LevelSystem CurrentLevel { get; private set; } = null;
 
-    public BaseWeapon.BaseWeaponModifier weapon = new Weapon_AssaultRifle();
+    /// <summary>
+    /// The current weapon equiped
+    /// </summary>
+    public BaseWeapon.BaseWeaponModifier weaponModifier = new Weapon_AssaultRifle();
+
+    private BaseWeapon weapon = null;
     /// <summary>
     /// The movement system
     /// </summary>
@@ -31,9 +39,12 @@ public class PlayerSystem : MonoBehaviour
     /// </summary>
     private WeaponSystem weaponSystem = null;
     /// <summary>
+    /// Collision system
+    /// </summary>
+    private CharacterCollisionSystem collisionSystem = null;
+    /// <summary>
     /// The minimap camera
     /// </summary>
-    [Required]
     public MinimapFollow minimapCamera = null;
 
     /// <summary>
@@ -48,8 +59,19 @@ public class PlayerSystem : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         movementSystem = GetComponent<PlayerInputSystem>();
         healthSystem = GetComponent<HealthSystem>();
+        healthSystem.OnDied += HealthSystem_OnDied;
         weaponSystem = GetComponent<WeaponSystem>();
-        weaponSystem.EquipWeapon(weapon.CreateTarget());
+        weapon = GetComponent<BaseWeapon>();
+        weaponModifier.SetTarget(weapon);
+        weaponSystem.EquipWeapon(weapon);
+        collisionSystem = GetComponent<CharacterCollisionSystem>();
+        collisionSystem.OnBulletCollisionEnter.AddListener(OnBulletCollision);
+    }
+
+    private void HealthSystem_OnDied(object sender, EventArgs e)
+    {
+        OnDied?.Invoke(this, EventArgs.Empty);
+        //Destroy(gameObject);
     }
 
     /// <summary>
@@ -85,14 +107,17 @@ public class PlayerSystem : MonoBehaviour
         CurrentLevel = level;
 
         // Set the minimap
-        minimapCamera.distance = CurrentLevel.minimapDistance;
-        if (CurrentLevel.minimapAnchor != null)
+        if (minimapCamera != null)
         {
-            minimapCamera.target = CurrentLevel.minimapAnchor;
-        }
-        else
-        {
-            minimapCamera.target = gameObject.transform;
+            minimapCamera.distance = CurrentLevel.minimapDistance;
+            if (CurrentLevel.minimapAnchor != null)
+            {
+                minimapCamera.target = CurrentLevel.minimapAnchor;
+            }
+            else
+            {
+                minimapCamera.target = gameObject.transform;
+            }
         }
 
         // Teleport the player to the next level
@@ -107,6 +132,52 @@ public class PlayerSystem : MonoBehaviour
     private void CurrentLevel_OnPlayerFall(object sender, EventArgs e)
     {
         TeleportCharacter(CurrentLevel.teleporterEntry.transform.position);
+    }
+
+    public void OnBulletCollision(Collider collider)
+    {
+        // Check bullet source
+        BulletSystem bullet = collider.GetComponent<BulletSystem>();
+        if (bullet.shooter != this.gameObject)
+        {
+            // Take damage
+            healthSystem.TakeDamage(bullet.damage);
+
+            bool destroyBullet = true;
+
+            // Check for bullet type
+            switch (bullet.type)
+            {
+                case BaseWeapon.BulletType.Piercing:
+                    destroyBullet = false;
+                    break;
+                case BaseWeapon.BulletType.Fire:
+                    break;
+                case BaseWeapon.BulletType.Ice:
+                    break;
+                default:
+                    break;
+            }
+
+            if (destroyBullet)
+                bullet.Destroy();
+        }
+    }
+
+    public void EquipWeapon(BaseWeapon.BaseWeaponModifier modifier)
+    {
+        modifier.SetTarget(weapon);
+        weaponSystem.EquipWeapon(weapon);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        healthSystem.TakeDamage(amount);
+    }
+
+    public void Heal(int amount)
+    {
+        healthSystem.GiveHealth(amount);
     }
 
     /// <summary>
@@ -134,18 +205,6 @@ public class PlayerSystem : MonoBehaviour
     {
         gameObject.tag = "Player";
         movementSystem.enabled = true;
-    }
-
-    private void OnTriggerEnter(Collider collider)
-    {
-        if (collider.tag == "EnnemyBullet")
-        {
-            BulletSystem bs = collider.GetComponent<BulletSystem>();
-            healthSystem.TakeDamage(bs.damage);
-
-            if (bs.type != BaseWeapon.BulletType.Piercing)
-                bs.Destroy();
-        }
     }
 
     // Draw gizmos to easily locate player in scene

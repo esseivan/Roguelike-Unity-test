@@ -43,4 +43,9 @@ public class BaseAimSystem : MonoBehaviour
     {
         return shootRotation;
     }
+    
+    public virtual void Aim()
+    {
+        rotateFrom.rotation = fixedTarget.transform.rotation;
+    }
 }

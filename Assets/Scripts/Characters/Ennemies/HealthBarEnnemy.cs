@@ -20,7 +20,7 @@ public class HealthBarEnnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float percent = (float)healthSystem.health / healthSystem.maxHealth;
+        float percent = (float)healthSystem.GetHealth() / healthSystem.maxHealth;
         createdHealthbar.SetPercentage(percent);
     }
 }

@@ -34,14 +34,15 @@ public class BossLevelSystem : MonoBehaviour
     {
         levelSystem = GetComponent<LevelSystem>();
         levelSystem.OnPlayerEnter += LevelSystem_OnPlayerEnter;
+        entryDetection.OnEnter.AddListener(EntryDetection_OnEnter);
     }
 
-    public void EntryDetection_OnEnter(GameObject collider)
+    public void EntryDetection_OnEnter(Collider collider)
     {
         if (bossSpawned)
             return;
 
-        if(collider.tag =="Player")
+        if (collider.tag == "Player")
         {
             StartBoss();
         }
@@ -60,7 +61,7 @@ public class BossLevelSystem : MonoBehaviour
         EnnemySystem bossEnnemySystem = boss.GetComponent<EnnemySystem>();
         bossEnnemySystem.weapon = new WeaponB_AssaultRifle();
         bossEnnemySystem.OnDied += BossEnemySystem_OnDied;
-        levelSystem.OnPlayerFall.AddListener(LevelSystem_OnPlayerFall);
+        levelSystem.OnPlayerFall += LevelSystem_OnPlayerFall;
     }
 
     private void BossEnemySystem_OnDied(object sender, EventArgs e)
@@ -76,9 +77,10 @@ public class BossLevelSystem : MonoBehaviour
         tp.OnLevelComplete += Tp_OnLevelComplete;
     }
 
-    private void LevelSystem_OnPlayerFall(GameObject collider)
+    private void LevelSystem_OnPlayerFall(object sender, Collider collider)
     {
         playerSystem.TeleportCharacter(playerRespawnTeleporter.transform.position);
+        playerSystem.TakeDamage(10);
     }
 
     private void Tp_OnLevelComplete(object sender, System.EventArgs e)

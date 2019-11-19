@@ -9,6 +9,9 @@ public class Predictable : MonoBehaviour
     public Vector3 targetPosition;
     public Vector3 targetDirection;
 
+    public float alpha;
+    public float beta;
+
     private CharacterController controller = null;
 
     private void Start()
@@ -16,24 +19,28 @@ public class Predictable : MonoBehaviour
         controller = GetComponent<CharacterController>();
     }
 
-    public float GetPrediction(float speed, Transform shootFrom)
+    public float GetPrediction(float speed, Transform rotateFrom)
     {
         targetSpeed = controller.velocity.magnitude;
         targetDirection = controller.velocity;
         targetPosition = transform.position;
 
-        // Get speed ratio (and distance traveled ratio)
-        // Don't why but divide target speed by 2... it works then
-        float speedRatio = speed / (targetSpeed * 0.5f);
+        // beta = arcsin(sin(alpha) * lambda)
+
+        // Get speed ratio
+        // lambda = vp / vt
+        float lambda = (targetSpeed * 0.5f) / speed;
 
         // Get angle between the target direction and the source
-        float angle = -Vector3.SignedAngle(shootFrom.position - targetPosition, targetDirection, shootFrom.up);
+        // alpha = angle(PtPp, Vt)
+        alpha = -Vector3.SignedAngle(rotateFrom.position - targetPosition, targetDirection, rotateFrom.up);
 
         // Get at the source
-        float sinAngleSrc = Mathf.Sin(angle * Mathf.Deg2Rad) / speedRatio;
-        float angleSrc = Mathf.Asin(sinAngleSrc) * Mathf.Rad2Deg;
+        // sin(alpha) * lambda
+        float sinAngleSrc = Mathf.Sin(alpha * Mathf.Deg2Rad) * lambda;
+        beta = Mathf.Asin(sinAngleSrc) * Mathf.Rad2Deg;
 
         // return the rotated direction
-        return angleSrc;
+        return beta;
     }
 }

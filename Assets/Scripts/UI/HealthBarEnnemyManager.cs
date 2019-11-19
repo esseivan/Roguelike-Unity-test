@@ -3,30 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manage health bar above ennemies
+/// </summary>
 public class HealthBarEnnemyManager : MonoBehaviour
 {
     [Required]
-    public GameObject foreground = null;
-
-    public float defaultScale = 2;
-    public float defaultLocation = 0;
+    public SliderSystem slider = null;
 
     public void SetPercentage(float percentage)
     {
-        float newScale = percentage * defaultScale;
-        float newLocation = defaultLocation + defaultScale * (1 - percentage) / 2f;
-
-        Vector3 currScale = foreground.transform.localScale;
-        currScale.x = newScale;
-        Vector3 currPos = foreground.transform.localPosition;
-        currPos.x = newLocation;
-
-        foreground.transform.localScale = currScale;
-        foreground.transform.localPosition = currPos;
+        slider.SetPercentage(percentage);
     }
 
     private void Update()
     {
+        // Face the camera
         Camera camera = Camera.main;
 
         Vector3 delta = camera.transform.position - this.gameObject.transform.position;

@@ -14,6 +14,7 @@ public class MinimapFollow : MonoBehaviour
     /// <summary>
     /// The target to be followed
     /// </summary>
+    [Required]
     public Transform target = null;
 
     /// <summary>

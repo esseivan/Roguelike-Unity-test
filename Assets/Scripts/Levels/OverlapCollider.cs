@@ -12,24 +12,23 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Collider))]
 public class OverlapCollider : MonoBehaviour
 {
-    [FormerlySerializedAs("OnEnter")]
-    [SerializeField]
-    public OnTriggerEvent m_OnEnter = new OnTriggerEvent();
 
-    [FormerlySerializedAs("OnExit")]
     [SerializeField]
-    public OnTriggerEvent m_OnExit = new OnTriggerEvent();
+    public OnTriggerEvent OnEnter = new OnTriggerEvent();
+
+    [SerializeField]
+    public OnTriggerEvent OnExit = new OnTriggerEvent();
 
     private void OnTriggerEnter(Collider collider)
     {
-        m_OnEnter.Invoke(collider.gameObject);
+        OnEnter.Invoke(collider);
     }
 
     private void OnTriggerExit(Collider collider)
     {
-        m_OnExit.Invoke(collider.gameObject);
+        OnExit.Invoke(collider);
     }
 }
 
 [Serializable]
-public class OnTriggerEvent : UnityEvent<GameObject> { }
+public class OnTriggerEvent : UnityEvent<Collider> { }
